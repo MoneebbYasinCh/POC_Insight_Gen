@@ -5,17 +5,19 @@ from insight_gen import analyze_campaign_data
 
 st.title("Prompt Query Decision & LLM Response")
 
-# Initialize chat history in session state
 if "history" not in st.session_state:
-    st.session_state.history = []  # List of (role, content) tuples
+    st.session_state.history = []
 
-user_prompt = st.text_input("Enter your prompt:")
 limit = st.number_input("Max results to display", min_value=1, max_value=100, value=5)
 
-if user_prompt:
+with st.form("chat_form", clear_on_submit=True):
+    user_prompt = st.text_input("Enter your prompt:")
+    submitted = st.form_submit_button("Send")
+
+if submitted and user_prompt.strip():
     # Add user message to history
     st.session_state.history.append(("user", user_prompt))
-    result = is_query_needed(user_prompt, history=st.session_state.history[:-1])  # Exclude current user input
+    result = is_query_needed(user_prompt, history=st.session_state.history[:-1])
     st.subheader("Decision:")
     st.json(result.dict())
     if result.query_needed:
@@ -28,7 +30,6 @@ if user_prompt:
             st.subheader("Insights:")
             insights = analyze_campaign_data(db_results, user_prompt)
             st.write(insights)
-            # Add assistant response to history
             st.session_state.history.append(("assistant", f"DB Results: {db_results}\nInsights: {insights}"))
         else:
             st.info("No matching campaigns found.")
