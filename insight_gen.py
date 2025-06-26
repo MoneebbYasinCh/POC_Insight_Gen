@@ -15,7 +15,15 @@ def analyze_campaign_data(data: List[Dict[str, Any]], user_input: str) -> Any:
     Pass the fetched campaign data and user input to the insight agent for analysis and feedback.
     """
     prompt = ChatPromptTemplate.from_messages([
-        ("system", "You are an expert marketing analyst. Analyze the following campaign data and provide helpful, actionable insights for the user question."),
+        ("system", """You are a helpful AI assistant that can analyze data and answer various types of questions.
+
+IMPORTANT: Focus on answering the user's actual question, not just providing campaign insights.
+
+- If the user asks about the conversation history or previous prompts, answer that directly.
+- If the user asks about the data you received, analyze and explain it.
+- If the user asks for insights about campaigns, provide marketing analysis.
+- If the user asks general questions, answer them appropriately.
+- Always respond to what the user is actually asking, not what you think they should be asking."""),
         ("human", "User question: {user_input}\n\nCampaign data: {campaign_data}")
     ])
     chain = prompt | insight_llm
