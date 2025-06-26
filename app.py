@@ -104,9 +104,10 @@ if submitted and user_prompt.strip():
     else:
         with st.spinner("Generating LLM response..."):
             llm_response = llm_direct_response(user_prompt, history=st.session_state.history[:-1])
-            llm_response_text = f"<b>LLM Response:</b> {llm_response}"
-            response_container.markdown(f'<div class="assistant-bubble">{llm_response_text}</div>', unsafe_allow_html=True)
+            assistant_response = f"<b>Response:</b> {llm_response}"
+            response_container.markdown(f'<div class="assistant-bubble">{assistant_response}</div>', unsafe_allow_html=True)
     
-    # Clear status and add final response to history
+    # Clear status container and add final response to history
     status_container.empty()
-    st.session_state.history.append(("assistant", assistant_response)) 
+    st.session_state.history.append(("assistant", assistant_response))
+    st.rerun() 
